@@ -77,13 +77,19 @@ def translate_text_with_google(text, target_language):
 
         for i in range(0, len(text), max_chunk_length):
             chunk = text[i:i + max_chunk_length]
-            translated_chunk = google_translator.translate(chunk, dest=target_language).text
-            translated_text += translated_chunk
+            translated_chunk = google_translator.translate(chunk, dest=target_language)
+            if translated_chunk and hasattr(translated_chunk, 'text'):
+                translated_text += translated_chunk.text
+
+        if not translated_text:
+            raise Exception("Translation result is empty.")
 
         return translated_text
 
     except Exception as e:
         return str(e)
+
+
 
 # Function to convert text to speech and save as an MP3 file
 def convert_text_to_speech(text, output_file, language='en'):
